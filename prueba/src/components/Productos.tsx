@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../App.css';
 import axios from 'axios';
 import { Loading } from './loading';
+import { ErrorApi } from './errorApi';
 
 interface Rating{
     rate: number;
@@ -23,8 +24,7 @@ export const Productos = () => {
     const [productos, setProductos] = useState<Products[]>([])
     const [loading, setLoading] = useState(false);
     const [ascendente, setAscendente ] = useState(true);
-    //const add = () => setCount(count + 1)
-    //const remove = () => setCount(count - 1)
+    const [hayError, setHayError] = useState(false);
   
     const ordenarProductos = (products: Products[]) => {
         return ascendente ? [...products].sort((a,b) => a.price - b.price) : [...products].sort((a,b) =>  b.price - a.price) 
@@ -46,6 +46,7 @@ export const Productos = () => {
                 console.log(productos);
             } catch (err) {
                 console.log(err)
+                setHayError(true)
           
             } finally {
                 setLoading(false);
@@ -58,11 +59,15 @@ export const Productos = () => {
     
     return (
         <div>
-            <button onClick={botonOrdenar}>
+            <button
+                style={{margin:'50px', textAlign:'center'}} 
+            onClick={botonOrdenar}>
                 Ordenar por precio 
             </button>
             <h2>Lista de Productos</h2>
-            {loading ? <Loading /> :
+            {loading && <Loading />}
+            {hayError && <ErrorApi />}
+            {!loading && !hayError && 
             
             <table>
             <thead>
